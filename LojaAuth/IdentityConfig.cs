@@ -38,6 +38,7 @@ namespace LojaAuth
             return new List<Client>() { 
                 new Client
                 {
+                    ClientName = "Client App 1",
                     ClientId = "codenation.api_client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets = {

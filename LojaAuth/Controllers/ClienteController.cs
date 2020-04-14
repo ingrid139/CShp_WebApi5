@@ -4,6 +4,7 @@ using LojaAuth.Api.Models;
 using LojaAuth.DTO;
 using LojaAuth.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace LojaAuth.Controllers
@@ -111,8 +112,16 @@ namespace LojaAuth.Controllers
 
             // nesta parte, temos um exemplo de requisição com o tipo "password" 
             // esta é a forma mais comum
-            var tokenClient = new TokenClient(disco.TokenEndpoint, "codenation.api_client", "codenation.api_secret");
-            var tokenResponse = await tokenClient.RequestResourceOwnerPasswordAsync(value.UserName, value.Password, "codenation");
+            var httpClient = new HttpClient();
+            var tokenResponse = await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
+            {
+                Address = disco.TokenEndpoint,
+                ClientId = "codenation.api_client",
+                ClientSecret = "codenation.api_secret",
+                UserName = value.UserName,
+                Password = value.Password,
+                Scope = "codenation"
+            });
 
             // Se não tiver tiver um erro retornar token
             if (!tokenResponse.IsError)
@@ -123,6 +132,5 @@ namespace LojaAuth.Controllers
             //retorna não autorizado e descrição do erro
             return Unauthorized(tokenResponse.ErrorDescription);
         }
-
     }
 }
